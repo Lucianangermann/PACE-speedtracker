@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PACE · Creator Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --accent:        #ef4444;
+    --accent-hot:    #ff5757;
+    --accent-amber:  #f59e0b;
+    --accent-dim:    #b91c1c;
+    --accent-glow:   rgba(239, 68, 68, 0.18);
+    --accent-soft:   rgba(239, 68, 68, 0.08);
+
+    --bg:            #0a0a0b;
+    --bg-deep:       #050506;
+    --surface:       #111113;
+    --surface-2:     #17171a;
+    --surface-3:     #1d1d21;
+    --border:        rgba(255, 255, 255, 0.06);
+    --border-strong: rgba(255, 255, 255, 0.10);
+
+    --text:          #fafafa;
+    --text-dim:      #a1a1aa;
+    --muted:         #6b6b73;
+
+    --radius:        14px;
+    --radius-sm:     10px;
+  }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  /* ---------- Header ---------- */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 14px 28px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10, 10, 11, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: relative;
+    z-index: 10;
+  }
+
+  .brand { display: flex; align-items: center; gap: 12px; }
+
+  .brand-logo-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .brand-text { display: flex; flex-direction: column; line-height: 1.15; }
+  .brand-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; letter-spacing: -0.3px; }
+  .brand-sub  { font-size: 11px; color: var(--muted); letter-spacing: 0.02em; }
+
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+  }
+
+  .nav-tab {
+    padding: 7px 14px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-dim);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    transition: all 0.15s ease;
+    font-family: inherit;
+  }
+
+  .nav-tab.active { background: var(--surface-3); color: var(--text); }
+  .nav-tab:not(.active):hover { color: var(--text); }
+
+  .header-right { display: flex; align-items: center; gap: 12px; }
+
+  .header-link {
+    font-size: 12px;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 7px 12px;
+    border-radius: 8px;
+    transition: all 0.15s ease;
+  }
+  .header-link:hover { color: var(--text); background: var(--surface); }
+
+  .header-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent-hot);
+    background: var(--accent-soft);
+    border: 1px solid rgba(239,68,68,0.25);
+    padding: 5px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .header-pill::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent-hot);
+    box-shadow: 0 0 8px var(--accent-hot);
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  /* ---------- Main layout ---------- */
+  .main {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    height: calc(100vh - 63px);
+    overflow: hidden;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    background: var(--surface);
+    padding: 22px 20px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .sidebar::-webkit-scrollbar { width: 6px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+  .sidebar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .section-label svg { width: 12px; height: 12px; opacity: 0.7; }
+
+  .section-badge {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--muted);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+
+  /* Segmented controls */
+  .segmented {
+    display: flex;
+    gap: 4px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 4px;
+    border-radius: 10px;
+  }
+  .seg-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-radius: 7px;
+    padding: 8px;
+    color: var(--text-dim);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .seg-btn:hover { color: var(--text); }
+  .seg-btn.active {
+    background: var(--surface-3);
+    color: var(--text);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 1px 2px rgba(0,0,0,0.3);
+  }
+
+  /* Template grid */
+  .template-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  .tpl-btn {
+    position: relative;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 10px 12px;
+    color: var(--text-dim);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.18s ease;
+    line-height: 1.3;
+    overflow: hidden;
+  }
+  .tpl-btn:hover { border-color: rgba(239,68,68,0.35); color: var(--text); transform: translateY(-1px); }
+  .tpl-btn.active {
+    border-color: var(--accent);
+    background: linear-gradient(180deg, var(--accent-soft) 0%, var(--surface-2) 100%);
+    color: var(--text);
+    box-shadow: 0 0 0 1px var(--accent-soft), 0 8px 24px -12px var(--accent-glow);
+  }
+  .tpl-btn.active::after {
+    content: '';
+    position: absolute;
+    top: 8px; right: 8px;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+  .tpl-icon { display: block; margin: 0 auto 6px; width: 22px; height: 22px; color: var(--text-dim); }
+  .tpl-btn.active .tpl-icon { color: var(--accent-hot); }
+
+  /* Inputs */
+  .input-group { display: flex; flex-direction: column; gap: 12px; }
+
+  .input-row { display: flex; flex-direction: column; gap: 6px; }
+  .input-row label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-dim);
+    letter-spacing: 0.02em;
+    display: flex;
+    justify-content: space-between;
+  }
+  .input-row label .label-hint { color: var(--muted); font-weight: 400; }
+
+  .input-wrap { position: relative; }
+
+  .input-row input,
+  .input-row select {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 10px 12px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 500;
+    width: 100%;
+    outline: none;
+    transition: all 0.15s ease;
+  }
+  .input-row input:hover, .input-row select:hover { border-color: var(--border-strong); }
+  .input-row input:focus, .input-row select:focus {
+    border-color: var(--accent);
+    background: var(--surface-3);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .input-row select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+  }
+  .input-row select option { background: #17171a; color: var(--text); }
+
+  .hint {
+    font-size: 11.5px;
+    color: var(--text-dim);
+    background: linear-gradient(180deg, var(--accent-soft) 0%, var(--surface-2) 100%);
+    border: 1px solid rgba(239,68,68,0.18);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    line-height: 1.55;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin-top: 16px;
+  }
+  .hint-icon { flex-shrink: 0; width: 14px; height: 14px; color: var(--accent-hot); margin-top: 1px; }
+
+  /* Color swatches */
+  .color-swatches { display: flex; gap: 10px; flex-wrap: wrap; padding: 2px 0; }
+  .color-swatch {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s ease, outline-color 0.15s ease;
+    outline: 2px solid transparent;
+    outline-offset: 3px;
+  }
+  .color-swatch:hover { transform: scale(1.13); }
+  .color-swatch.active { outline-color: rgba(255,255,255,0.75); }
+
+  /* ---------- Preview area ---------- */
+  .preview-area {
+    display: flex;
+    flex-direction: column;
+    background:
+      radial-gradient(900px 600px at 80% -10%, rgba(239,68,68,0.06), transparent 60%),
+      radial-gradient(700px 500px at 0% 110%, rgba(245,158,11,0.04), transparent 60%),
+      var(--bg-deep);
+    overflow: hidden;
+    position: relative;
+  }
+  .preview-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse 80% 70% at center, black 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at center, black 30%, transparent 80%);
+  }
+
+  .preview-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,10,11,0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 2;
+  }
+  .toolbar-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .format-info {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'Space Grotesk', monospace;
+    font-weight: 500;
+    padding: 5px 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 11px;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+  .toolbar-actions { display: flex; gap: 8px; }
+  .icon-btn {
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .icon-btn:hover { background: var(--surface-3); color: var(--text); border-color: var(--border-strong); }
+  .icon-btn svg { width: 16px; height: 16px; }
+
+  .preview-stage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    padding: 28px;
+    overflow: auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .canvas-frame {
+    border-radius: 18px;
+    padding: 8px;
+    background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(245,158,11,0.08), transparent);
+    box-shadow: 0 30px 80px -20px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
+  }
+
+  canvas {
+    border-radius: 12px;
+    display: block;
+    max-width: 100%;
+    max-height: calc(100vh - 270px);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    background: #000;
+  }
+
+  .preview-actions { display: flex; align-items: center; gap: 10px; }
+
+  .dl-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
+    color: white;
+    border: none;
+    border-radius: 11px;
+    padding: 13px 24px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    letter-spacing: 0.01em;
+    box-shadow: 0 8px 24px -8px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.15);
+  }
+  .dl-btn:hover { transform: translateY(-1px); box-shadow: 0 14px 30px -8px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.2); }
+  .dl-btn:active { transform: translateY(0); }
+  .dl-btn svg { width: 16px; height: 16px; }
+
+  .preview-note { font-size: 11.5px; color: var(--muted); text-align: center; letter-spacing: 0.02em; }
+
+  @media (max-width: 900px) {
+    .main { grid-template-columns: 1fr; }
+    .sidebar { border-right: none; border-bottom: 1px solid var(--border); max-height: 50vh; }
+    .nav-tabs { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <img src="../../Downloads/PACE LOGO.jpeg" class="brand-logo-img" alt="PACE">
+    <div class="brand-text">
+      <span class="brand-name">PACE</span>
+      <span class="brand-sub">Creator Studio</span>
+    </div>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="nav-tab active">Studio</button>
+    <button class="nav-tab" onclick="alert('Coming soon: Creator Leaderboard')">Leaderboard</button>
+  </div>
+
+  <div class="header-right">
+    <span class="header-pill">Live</span>
+    <a class="header-link" href="https://pace-mobile.com" target="_blank" rel="noopener">pace-mobile.com ↗</a>
+  </div>
+</header>
+
+<div class="main">
+  <aside class="sidebar">
+
+    <!-- Unit -->
+    <div>
+      <div class="section-header">
+        <div class="section-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>
+          Einheit
+        </div>
+      </div>
+      <div class="segmented">
+        <button class="seg-btn active" data-unit="kmh" onclick="setUnit('kmh', this)">km/h</button>
+        <button class="seg-btn" data-unit="mph" onclick="setUnit('mph', this)">mph</button>
+      </div>
+    </div>
+
+    <!-- Template -->
+    <div>
+      <div class="section-header">
+        <div class="section-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Template
+        </div>
+        <span class="section-badge">6</span>
+      </div>
+      <div class="template-grid">
+        <button class="tpl-btn active" onclick="setTemplate('basic', this)">
+          <svg class="tpl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 16l4-4 3 3 5-7"/></svg>
+          Basic Stats
+        </button>
+        <button class="tpl-btn" onclick="setTemplate('topspeed', this)">
+          <svg class="tpl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+          Top Speed
+        </button>
+        <button class="tpl-btn" onclick="setTemplate('acceleration', this)">
+          <svg class="tpl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          0–100
+        </button>
+        <button class="tpl-btn" onclick="setTemplate('leaderboard', this)">
+          <svg class="tpl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v6a5 5 0 01-10 0V4z"/><path d="M5 4H3v3a3 3 0 003 3M19 4h2v3a3 3 0 01-3 3"/></svg>
+          Leaderboard
+        </button>
+        <button class="tpl-btn" onclick="setTemplate('story', this)">
+          <svg class="tpl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>
+          Story 9:16
+        </button>
+        <button class="tpl-btn" onclick="setTemplate('animated', this)">
+          <svg class="tpl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Animiert ✦
+        </button>
+      </div>
+    </div>
+
+    <!-- Accent color -->
+    <div>
+      <div class="section-header">
+        <div class="section-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="8" cy="14" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="9" r="1.5" fill="currentColor" stroke="none"/><circle cx="16" cy="14" r="1.5" fill="currentColor" stroke="none"/></svg>
+          Akzentfarbe
+        </div>
+      </div>
+      <div id="color-picker" class="color-swatches"></div>
+    </div>
+
+    <!-- Trip data inputs -->
+    <div id="inputs-container"></div>
+
+  </aside>
+
+  <section class="preview-area">
+    <div class="preview-toolbar">
+      <div class="toolbar-info">
+        <span id="format-pill" class="format-info">1080 × 1080</span>
+        <span>Live Preview</span>
+      </div>
+      <div class="toolbar-actions">
+        <button class="icon-btn" onclick="render()" title="Vorschau aktualisieren">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.4L3 16"/><path d="M3 21v-5h5"/></svg>
+        </button>
+        <button class="icon-btn" onclick="copyToClipboard()" title="In Zwischenablage kopieren">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="preview-stage">
+      <div class="canvas-frame">
+        <canvas id="preview" width="1080" height="1080"></canvas>
+      </div>
+      <div class="preview-actions">
+        <button class="dl-btn" onclick="download()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          PNG herunterladen
+        </button>
+      </div>
+      <div class="preview-note">Optimiert für Instagram, TikTok &amp; YouTube Shorts</div>
+    </div>
+  </section>
+</div>
+
+<script>
+const canvas = document.getElementById('preview');
+const ctx = canvas.getContext('2d');
+
+// Preload PACE logo image
+const logoImg = new Image();
+logoImg.src = '../../Downloads/PACE LOGO.jpeg';
+logoImg.onload = () => render();
+
+let state = {
+  unit: 'kmh',
+  template: 'basic',
+  theme: 'red',
+  username: 'MaxMustermann',
+  topSpeed: 187,
+  avgSpeed: 94,
+  distance: 42.3,
+  time: '00:27:14',
+  rank: '1st',
+  region: 'Germany',
+  acceleration: 4.2,
+  xp: 2840,
+  rank1name: 'SpeedKing',
+  rank1speed: 210,
+  rank2name: 'FastDriver',
+  rank2speed: 195,
+  rank3name: 'QuickRacer',
+  rank3speed: 178,
+  cornerSpeed: 87,
+};
+
+const rankOptions = ['1st','2nd','3rd','4th','5th','6th','7th','8th','9th','10th','Top 1%','Top 5%','Top 10%','Top 25%'];
+
+const templates = {
+  basic: [
+    { key: 'username', label: 'Benutzername', type: 'text' },
+    { key: 'distance', label: 'Distanz', hint: 'km', type: 'number', step: 0.1 },
+    { key: 'time', label: 'Fahrzeit', hint: 'hh:mm:ss', type: 'text' },
+    { key: 'avgSpeed', label: 'Ø Geschwindigkeit', type: 'number' },
+    { key: 'topSpeed', label: 'Top Speed', type: 'number' },
+    { key: 'rank', label: 'Rang', type: 'select', options: rankOptions },
+    { key: 'region', label: 'Region', type: 'text' },
+  ],
+  topspeed: [
+    { key: 'username', label: 'Benutzername', type: 'text' },
+    { key: 'topSpeed', label: 'Top Speed', type: 'number' },
+    { key: 'rank', label: 'Rang', type: 'select', options: rankOptions },
+    { key: 'region', label: 'Region', type: 'text' },
+  ],
+  acceleration: [
+    { key: 'username', label: 'Benutzername', type: 'text' },
+    { key: 'acceleration', label: '0–100 km/h', hint: 'Sekunden', type: 'number', step: 0.01 },
+    { key: 'rank', label: 'Rang', type: 'select', options: rankOptions },
+    { key: 'region', label: 'Region', type: 'text' },
+  ],
+  leaderboard: [
+    { key: 'username', label: 'Dein Benutzername', type: 'text' },
+    { key: 'topSpeed', label: 'Deine Top Speed', type: 'number' },
+    { key: 'rank', label: 'Dein Rang', type: 'select', options: ['1st', '2nd', '3rd'] },
+    { key: 'region', label: 'Region', type: 'text' },
+    { key: 'rank1name', label: 'Platz 1 · Name', type: 'text' },
+    { key: 'rank1speed', label: 'Platz 1 · Top Speed', type: 'number' },
+    { key: 'rank2name', label: 'Platz 2 · Name', type: 'text' },
+    { key: 'rank2speed', label: 'Platz 2 · Top Speed', type: 'number' },
+    { key: 'rank3name', label: 'Platz 3 · Name', type: 'text' },
+    { key: 'rank3speed', label: 'Platz 3 · Top Speed', type: 'number' },
+    { key: 'xp', label: 'XP Punkte', type: 'number' },
+  ],
+  story: [
+    { key: 'username', label: 'Benutzername', type: 'text' },
+    { key: 'topSpeed', label: 'Top Speed', type: 'number' },
+    { key: 'distance', label: 'Distanz', hint: 'km', type: 'number', step: 0.1 },
+    { key: 'time', label: 'Fahrzeit', hint: 'hh:mm:ss', type: 'text' },
+    { key: 'cornerSpeed', label: 'Top Corner Speed', hint: 'km/h', type: 'number' },
+    { key: 'rank', label: 'Rang', type: 'select', options: rankOptions },
+    { key: 'region', label: 'Region', type: 'text' },
+  ],
+  animated: [
+    { key: 'username', label: 'Benutzername', type: 'text' },
+    { key: 'distance', label: 'Distanz', hint: 'km', type: 'number', step: 0.1 },
+    { key: 'time', label: 'Fahrzeit', hint: 'hh:mm:ss', type: 'text' },
+    { key: 'avgSpeed', label: 'Ø Geschwindigkeit', type: 'number' },
+    { key: 'topSpeed', label: 'Top Speed', type: 'number' },
+    { key: 'rank', label: 'Rang', type: 'select', options: rankOptions },
+    { key: 'region', label: 'Region', type: 'text' },
+  ],
+};
+
+function setTheme(id) {
+  state.theme = id;
+  const t = colorThemes.find(c => c.id === id);
+  document.documentElement.style.setProperty('--accent',       t.accent);
+  document.documentElement.style.setProperty('--accent-hot',   t.accentHot);
+  document.documentElement.style.setProperty('--accent-amber', t.accentMid);
+  document.documentElement.style.setProperty('--accent-dim',   hex(t.accent, 0.75));
+  document.documentElement.style.setProperty('--accent-glow',  t.glow);
+  document.documentElement.style.setProperty('--accent-soft',  hex(t.accent, 0.08));
+  document.querySelectorAll('.color-swatch').forEach(s =>
+    s.classList.toggle('active', s.dataset.id === id));
+  render();
+}
+
+function buildColorPicker() {
+  const container = document.getElementById('color-picker');
+  if (!container) return;
+  container.innerHTML = '';
+  colorThemes.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'color-swatch' + (state.theme === t.id ? ' active' : '');
+    btn.style.cssText = `background:${t.accent};box-shadow:0 4px 14px ${hex(t.accent, 0.45)}`;
+    btn.dataset.id = t.id;
+    btn.title = t.label;
+    btn.onclick = () => setTheme(t.id);
+    container.appendChild(btn);
+  });
+}
+
+function setUnit(u, el) {
+  state.unit = u;
+  document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  buildInputs();
+  render();
+}
+
+function setTemplate(t, el) {
+  state.template = t;
+  document.querySelectorAll('.tpl-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  buildInputs();
+  render();
+}
+
+function buildInputs() {
+  const c = document.getElementById('inputs-container');
+  const fields = templates[state.template];
+  let html = `<div class="section-header"><div class="section-label">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Trip Daten</div></div><div class="input-group">`;
+  fields.forEach(f => {
+    const hintHtml = f.hint ? `<span class="label-hint">${f.hint}</span>` : '';
+    html += `<div class="input-row"><label>${f.label}${hintHtml}</label><div class="input-wrap">`;
+    if (f.type === 'select') {
+      html += `<select onchange="state['${f.key}']=this.value;render()">`;
+      f.options.forEach(o => {
+        html += `<option ${state[f.key]===o?'selected':''}>${o}</option>`;
+      });
+      html += `</select>`;
+    } else {
+      const step = f.step ? `step="${f.step}"` : '';
+      const inputType = f.type === 'number' ? 'number' : 'text';
+      const parser = f.type === 'number' ? 'parseFloat(this.value)||0' : 'this.value';
+      html += `<input type="${inputType}" ${step} value="${state[f.key]}" oninput="state['${f.key}']=${parser};render()">`;
+    }
+    html += `</div></div>`;
+  });
+  const refRange = state.unit === 'kmh' ? '100–220 km/h' : '60–135 mph';
+  html += `</div><div class="hint">
+    <svg class="hint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    <div><strong style="color:var(--text)">Referenz:</strong> Normale Autos erreichen ${refRange}. Sportwagen 250+ km/h.</div>
+  </div>`;
+  c.innerHTML = html;
+}
+
+// ---- Canvas constants ----
+const BG      = '#08080a';
+const SURFACE2 = '#1a1a1e';
+const TEXT     = '#fafafa';
+const TEXT_DIM = '#a1a1aa';
+const MUTED    = '#6b6b73';
+
+const colorThemes = [
+  { id: 'red',    accent: '#ef4444', accentHot: '#ff5757', accentMid: '#f59e0b', glow: 'rgba(239,68,68,0.18)',   label: 'Rot' },
+  { id: 'blue',   accent: '#3b82f6', accentHot: '#60a5fa', accentMid: '#06b6d4', glow: 'rgba(59,130,246,0.18)',  label: 'Blau' },
+  { id: 'green',  accent: '#22c55e', accentHot: '#4ade80', accentMid: '#a3e635', glow: 'rgba(34,197,94,0.18)',   label: 'Grün' },
+  { id: 'purple', accent: '#a855f7', accentHot: '#c084fc', accentMid: '#ec4899', glow: 'rgba(168,85,247,0.18)',  label: 'Lila' },
+  { id: 'orange', accent: '#f97316', accentHot: '#fb923c', accentMid: '#fbbf24', glow: 'rgba(249,115,22,0.18)',  label: 'Orange' },
+  { id: 'cyan',   accent: '#06b6d4', accentHot: '#22d3ee', accentMid: '#818cf8', glow: 'rgba(6,182,212,0.18)',   label: 'Cyan' },
+];
+function T() { return colorThemes.find(t => t.id === (state.theme || 'red')) || colorThemes[0]; }
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y);
+  ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+  ctx.lineTo(x+w, y+h-r);
+  ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+  ctx.lineTo(x+r, y+h);
+  ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+  ctx.lineTo(x, y+r);
+  ctx.quadraticCurveTo(x, y, x+r, y);
+  ctx.closePath();
+}
+
+function hex(color, alpha) {
+  const c = color.replace('#','');
+  const r = parseInt(c.substr(0,2),16);
+  const g = parseInt(c.substr(2,2),16);
+  const b = parseInt(c.substr(4,2),16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+function drawBackground() {
+  const W = canvas.width, H = canvas.height;
+  const t = T();
+  ctx.fillStyle = BG;
+  ctx.fillRect(0, 0, W, H);
+  const grad = ctx.createRadialGradient(W * 0.95, H * 0.05, 0, W * 0.95, H * 0.05, W * 0.85);
+  grad.addColorStop(0, hex(t.accent, 0.22));
+  grad.addColorStop(0.4, hex(t.accent, 0.06));
+  grad.addColorStop(1, 'transparent');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+  const grad2 = ctx.createRadialGradient(W * 0.05, H * 0.95, 0, W * 0.05, H * 0.95, W * 0.6);
+  grad2.addColorStop(0, hex(t.accentMid, 0.10));
+  grad2.addColorStop(1, 'transparent');
+  ctx.fillStyle = grad2;
+  ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = hex(t.accent, 0.12);
+  ctx.lineWidth = 2;
+  for (let i = 0; i < 6; i++) {
+    const off = i * 28;
+    ctx.beginPath();
+    ctx.moveTo(W - 220 + off, 40); ctx.lineTo(W - 60 + off, 200); ctx.stroke();
+  }
+}
+
+function drawLogo(x, y, imgSize = 76) {
+  if (logoImg.complete && logoImg.naturalWidth > 0) {
+    ctx.save();
+    ctx.beginPath();
+    roundRect(ctx, x, y, imgSize, imgSize, 12);
+    ctx.clip();
+    ctx.drawImage(logoImg, x, y, imgSize, imgSize);
+    ctx.restore();
+  }
+}
+
+function drawUsername(x, y) {
+  ctx.font = `800 44px 'Syne', sans-serif`;
+  ctx.fillStyle = T().accentHot;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillText('PACE', x, y - 54);
+  ctx.font = `500 28px 'Inter', sans-serif`;
+  ctx.fillStyle = TEXT_DIM;
+  ctx.fillText('@' + state.username, x, y);
+}
+
+function drawTripBadge(x, y) {
+  const text = 'LIVE TRIP';
+  ctx.font = `600 18px 'Inter', sans-serif`;
+  const tw = ctx.measureText(text).width;
+  const padX = 14, h = 30;
+  roundRect(ctx, x, y, tw + padX * 2 + 18, h, 15);
+  ctx.fillStyle = hex(T().accent, 0.12);
+  ctx.fill();
+  ctx.strokeStyle = hex(T().accent, 0.4);
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.fillStyle = T().accentHot;
+  ctx.beginPath();
+  ctx.arc(x + padX + 4, y + h/2, 4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = T().accentHot;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.font = `600 16px 'Inter', sans-serif`;
+  ctx.fillText(text, x + padX + 16, y + h/2);
+  ctx.textBaseline = 'alphabetic';
+}
+
+function rankColor(rank) {
+  if (rank === '1st') return '#FFD700';
+  if (rank === '2nd') return '#C0C0C0';
+  if (rank === '3rd') return '#CD7F32';
+  return T().accent;
+}
+
+// drawRankBadge: x,y = top-left. centered=true → x is horizontal center.
+function drawRankBadge(x, y, rank, region, centered) {
+  const t = T();
+  const color = rankColor(rank);
+  const line1 = '★ ' + rank;
+  const line2 = 'Fastest in ' + (region || 'Germany') + ' today';
+  ctx.font = `700 26px 'Inter', sans-serif`;
+  const tw1 = ctx.measureText(line1).width;
+  ctx.font = `400 15px 'Inter', sans-serif`;
+  const tw2 = ctx.measureText(line2).width;
+  const padX = 18;
+  const badgeW = Math.max(tw1, tw2) + padX * 2;
+  const badgeH = 72;
+  const drawX = centered ? x - badgeW / 2 : x;
+  roundRect(ctx, drawX, y, badgeW, badgeH, 12);
+  ctx.fillStyle = hex(color, 0.10);
+  ctx.fill();
+  ctx.strokeStyle = hex(color, 0.45);
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'alphabetic';
+  ctx.font = `700 26px 'Inter', sans-serif`;
+  ctx.fillStyle = color;
+  ctx.fillText(line1, drawX + padX, y + 34);
+  ctx.font = `400 15px 'Inter', sans-serif`;
+  ctx.fillStyle = TEXT_DIM;
+  ctx.fillText(line2, drawX + padX, y + 58);
+}
+
+function unitLabel() { return state.unit === 'kmh' ? 'km/h' : 'mph'; }
+function distLabel() { return state.unit === 'kmh' ? 'km' : 'mi'; }
+
+function getSpeed(v) {
+  if (state.unit === 'mph') return Math.round(v * 0.621371);
+  return Math.round(v);
+}
+
+function getDist(v) {
+  if (state.unit === 'mph') return (v * 0.621371).toFixed(1);
+  return (typeof v === 'number' ? v.toFixed(1) : v);
+}
+
+function drawSpeedArc(cx, cy, radius, speed, maxSpeed) {
+  const t = T();
+  const startAngle = Math.PI * 0.75;
+  const endAngle = Math.PI * 2.25;
+  const totalAngle = endAngle - startAngle;
+  const pct = Math.max(0, Math.min(speed / maxSpeed, 1));
+  // Tick marks
+  ctx.save();
+  ctx.translate(cx, cy);
+  const tickCount = 30;
+  for (let i = 0; i <= tickCount; i++) {
+    const a = startAngle + (totalAngle * i / tickCount);
+    const major = i % 5 === 0;
+    const r1 = radius + 22;
+    const r2 = radius + (major ? 36 : 30);
+    const tickPct = i / tickCount;
+    ctx.strokeStyle = tickPct <= pct ? hex(t.accent, major ? 0.9 : 0.55) : 'rgba(255,255,255,0.10)';
+    ctx.lineWidth = major ? 3 : 1.5;
+    ctx.beginPath();
+    ctx.moveTo(Math.cos(a) * r1, Math.sin(a) * r1);
+    ctx.lineTo(Math.cos(a) * r2, Math.sin(a) * r2);
+    ctx.stroke();
+  }
+  ctx.restore();
+  // Track
+  ctx.lineWidth = 18;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, startAngle, endAngle);
+  ctx.stroke();
+  // Filled arc
+  const grad = ctx.createLinearGradient(cx - radius, cy + radius, cx + radius, cy - radius);
+  grad.addColorStop(0, t.accentMid);
+  grad.addColorStop(0.6, t.accent);
+  grad.addColorStop(1, t.accentHot);
+  ctx.strokeStyle = grad;
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, startAngle, startAngle + totalAngle * pct);
+  ctx.stroke();
+  // Glow dot
+  const endA = startAngle + totalAngle * pct;
+  const ex = cx + Math.cos(endA) * radius;
+  const ey = cy + Math.sin(endA) * radius;
+  const dotGrad = ctx.createRadialGradient(ex, ey, 0, ex, ey, 24);
+  dotGrad.addColorStop(0, hex(t.accentHot, 0.9));
+  dotGrad.addColorStop(1, hex(t.accentHot, 0));
+  ctx.fillStyle = dotGrad;
+  ctx.beginPath(); ctx.arc(ex, ey, 24, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.beginPath(); ctx.arc(ex, ey, 6, 0, Math.PI * 2); ctx.fill();
+}
+
+function drawFooter(W, H) {
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(72, H - 100); ctx.lineTo(W - 72, H - 100); ctx.stroke();
+  ctx.textBaseline = 'alphabetic';
+  ctx.font = `500 18px 'Inter', sans-serif`;
+  ctx.fillStyle = MUTED;
+  ctx.textAlign = 'left';
+  ctx.fillText('Tracked with PACE', 72, H - 56);
+  ctx.textAlign = 'right';
+  ctx.fillStyle = T().accent;
+  ctx.font = `600 18px 'Inter', sans-serif`;
+  ctx.fillText('pace-mobile.com', W - 72, H - 56);
+}
+
+// ---- Templates ----
+
+function renderBasic() {
+  const W = canvas.width, H = canvas.height;
+  drawBackground();
+  drawLogo(72, 62);
+  drawUsername(72, 224);
+  drawTripBadge(W - 260, 72);
+
+  const spd = getSpeed(state.topSpeed);
+  const maxRef = state.unit === 'kmh' ? 300 : 186;
+  const arcCY = 490;
+
+  // Label above arc
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  ctx.font = `600 22px 'Inter', sans-serif`;
+  ctx.fillStyle = MUTED;
+  ctx.fillText('TOP SPEED', W/2, 252);
+
+  drawSpeedArc(W/2, arcCY, 218, spd, maxRef);
+
+  // Speed number centered in arc
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = `700 140px 'Space Grotesk', sans-serif`;
+  ctx.fillStyle = TEXT;
+  ctx.fillText(spd, W/2, arcCY - 12);
+  ctx.textBaseline = 'alphabetic';
+
+  // Unit label
+  ctx.font = `600 26px 'Inter', sans-serif`;
+  ctx.fillStyle = T().accent;
+  ctx.fillText(unitLabel().toUpperCase(), W/2, arcCY + 92);
+
+  // Stat cards
+  const statY = 780;
+  const stats = [
+    { label: 'Distanz', value: getDist(state.distance) + ' ' + distLabel() },
+    { label: 'Ø Speed', value: getSpeed(state.avgSpeed) + ' ' + unitLabel() },
+    { label: 'Zeit', value: state.time },
+  ];
+  const gap = 14;
+  const slotW = (W - 144 - gap * 2) / 3;
+  stats.forEach((s, i) => {
+    const x = 72 + (slotW + gap) * i;
+    roundRect(ctx, x, statY - 60, slotW, 134, 16);
+    ctx.fillStyle = 'rgba(255,255,255,0.025)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.fillStyle = T().accent;
+    roundRect(ctx, x + 20, statY - 60, 28, 3, 1.5);
+    ctx.fill();
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+    ctx.font = `400 16px 'Inter', sans-serif`;
+    ctx.fillStyle = MUTED;
+    ctx.fillText(s.label.toUpperCase(), x + 20, statY - 18);
+    ctx.font = `700 34px 'Space Grotesk', sans-serif`;
+    ctx.fillStyle = TEXT;
+    ctx.fillText(s.value, x + 20, statY + 36);
+  });
+
+  // Rank badge — centered below stat cards
+  drawRankBadge(W/2, 880, state.rank, state.region, true);
+  drawFooter(W, H);
+}
+
+function renderTopSpeed() {
+  const W = canvas.width, H = canvas.height;
+  drawBackground();
+  drawLogo(72, 62);
+  drawUsername(72, 224);
+
+  const spd = getSpeed(state.topSpeed);
+  const maxRef = state.unit === 'kmh' ? 300 : 186;
+  const arcCY = H/2 + 60;
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  ctx.font = `600 26px 'Inter', sans-serif`;
+  ctx.fillStyle = MUTED;
+  ctx.fillText('TOP SPEED', W/2, 248);
+
+  drawSpeedArc(W/2, arcCY, 286, spd, maxRef);
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = `700 190px 'Space Grotesk', sans-serif`;
+  ctx.fillStyle = TEXT;
+  ctx.fillText(spd, W/2, arcCY - 10);
+  ctx.textBaseline = 'alphabetic';
+
+  ctx.font = `600 36px 'Inter', sans-serif`;
+  ctx.fillStyle = T().accent;
+  ctx.fillText(unitLabel().toUpperCase(), W/2, arcCY + 156);
+
+  // Centered rank badge
+  drawRankBadge(W/2, H - 200, state.rank, state.region, true);
+  drawFooter(W, H);
+}
+
+function renderAcceleration() {
+  const W = canvas.width, H = canvas.height;
+  drawBackground();
+  drawLogo(72, 62);
+  drawUsername(72, 224);
+  drawTripBadge(W - 260, 72);
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  ctx.font = `700 46px 'Syne', sans-serif`;
+  ctx.fillStyle = TEXT;
+  ctx.fillText('0 — 100 KM/H', W/2, 402);
+
+  ctx.font = `500 32px 'Inter', sans-serif`;
+  ctx.fillStyle = TEXT_DIM;
+  ctx.fillText('in', W/2, 462);
+
+  // Number
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = `700 220px 'Space Grotesk', sans-serif`;
+  ctx.fillStyle = TEXT;
+  const num = parseFloat(state.acceleration).toFixed(2);
+  ctx.fillText(num, W/2, 576);
+  ctx.textBaseline = 'alphabetic';
+
+  ctx.font = `600 36px 'Inter', sans-serif`;
+  ctx.fillStyle = T().accent;
+  ctx.fillText('SEKUNDEN', W/2, 718);
+
+  // Centered rank badge
+  drawRankBadge(W/2, H - 200, state.rank, state.region, true);
+  drawFooter(W, H);
+}
+
+function renderLeaderboard() {
+  const W = canvas.width, H = canvas.height;
+  drawBackground();
+  drawLogo(72, 62);
+  drawUsername(72, 224);
+  drawTripBadge(W - 260, 72);
+
+  // Build rows from state
+  const rankNum = Math.max(1, Math.min(3, parseInt(state.rank) || 1));
+  const posData = [
+    { name: state.rank1name, speed: state.rank1speed },
+    { name: state.rank2name, speed: state.rank2speed },
+    { name: state.rank3name, speed: state.rank3speed },
+  ];
+  // Override user's position
+  posData[rankNum - 1] = { name: state.username, speed: state.topSpeed, me: true };
+
+  const rows = posData.map((d, i) => ({
+    pos: i + 1,
+    name: d.name,
+    speed: getSpeed(d.speed) + ' ' + unitLabel(),
+    me: !!d.me,
+  }));
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  ctx.font = `500 20px 'Inter', sans-serif`;
+  ctx.fillStyle = MUTED;
+  ctx.fillText('GLOBAL LEADERBOARD', W/2, 286);
+
+  ctx.font = `800 54px 'Syne', sans-serif`;
+  ctx.fillStyle = TEXT;
+  ctx.fillText('Top 3 Drivers', W/2, 354);
+
+  ctx.font = `400 20px 'Inter', sans-serif`;
+  ctx.fillStyle = MUTED;
+  ctx.fillText('Top Drivers in ' + state.region + ' today', W/2, 392);
+
+  const rowH = 128, startY = 430;
+  rows.forEach((r, i) => {
+    const y = startY + i * (rowH + 14);
+    roundRect(ctx, 72, y, W - 144, rowH, 18);
+    if (r.me) {
+      const g = ctx.createLinearGradient(72, y, W - 72, y);
+      g.addColorStop(0, hex(T().accent, 0.18));
+      g.addColorStop(1, hex(T().accent, 0.06));
+      ctx.fillStyle = g;
+      ctx.fill();
+      ctx.strokeStyle = T().accent;
+      ctx.lineWidth = 2;
+    } else {
+      ctx.fillStyle = 'rgba(255,255,255,0.025)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+      ctx.lineWidth = 1;
+    }
+    ctx.stroke();
+
+    const posColors = ['#FFD700','#C0C0C0','#CD7F32'];
+    const mcx = 140, mcy = y + rowH/2;
+    ctx.fillStyle = hex(posColors[i], 0.15);
+    ctx.beginPath(); ctx.arc(mcx, mcy, 36, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = posColors[i];
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.font = `700 28px 'Syne', sans-serif`;
+    ctx.fillStyle = posColors[i];
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(r.pos, mcx, mcy);
+    ctx.textBaseline = 'alphabetic';
+
+    ctx.font = `${r.me ? 600 : 500} ${r.me ? 34 : 28}px 'Inter', sans-serif`;
+    ctx.fillStyle = r.me ? TEXT : TEXT_DIM;
+    ctx.textAlign = 'left';
+    ctx.fillText((r.me ? '@' : '') + r.name, 200, mcy + 10);
+
+    ctx.font = `700 32px 'Space Grotesk', sans-serif`;
+    ctx.fillStyle = r.me ? T().accentHot : TEXT_DIM;
+    ctx.textAlign = 'right';
+    ctx.fillText(r.speed, W - 112, mcy + 10);
+  });
+
+  // XP pill
+  const xpText = 'XP ' + parseInt(state.xp).toLocaleString('de-DE');
+  ctx.font = `600 20px 'Inter', sans-serif`;
+  const xw = ctx.measureText(xpText).width;
+  roundRect(ctx, 72, H - 150, xw + 36, 42, 21);
+  ctx.fillStyle = hex(T().accent, 0.12);
+  ctx.fill();
+  ctx.strokeStyle = hex(T().accent, 0.4);
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.fillStyle = T().accent;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(xpText, 90, H - 129);
+  ctx.textBaseline = 'alphabetic';
+
+  drawFooter(W, H);
+}
+
+function renderStory() {
+  canvas.width = 1080;
+  canvas.height = 1920;
+  const W = canvas.width, H = canvas.height;
+  const t = T();
+
+  ctx.fillStyle = BG;
+  ctx.fillRect(0, 0, W, H);
+  const grad = ctx.createRadialGradient(W/2, H*0.05, 0, W/2, H*0.05, W*1.1);
+  grad.addColorStop(0, hex(t.accent, 0.25));
+  grad.addColorStop(0.5, hex(t.accent, 0.04));
+  grad.addColorStop(1, 'transparent');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+  const grad2 = ctx.createRadialGradient(W/2, H*0.95, 0, W/2, H*0.95, W*0.8);
+  grad2.addColorStop(0, hex(t.accentMid, 0.12));
+  grad2.addColorStop(1, 'transparent');
+  ctx.fillStyle = grad2;
+  ctx.fillRect(0, 0, W, H);
+  drawLogo(72, 80, 80);
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  ctx.font = `500 32px 'Inter', sans-serif`;
+  ctx.fillStyle = TEXT_DIM;
+  ctx.fillText('@' + state.username, W/2, 400);
+
+  ctx.font = `600 22px 'Inter', sans-serif`;
+  ctx.fillStyle = MUTED;
+  ctx.fillText('TOP SPEED', W/2, 426);
+
+  const spd = getSpeed(state.topSpeed);
+  const arcCY = 760;
+  drawSpeedArc(W/2, arcCY, 260, spd, state.unit === 'kmh' ? 300 : 186);
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = `700 200px 'Space Grotesk', sans-serif`;
+  ctx.fillStyle = TEXT;
+  ctx.fillText(spd, W/2, arcCY);
+  ctx.textBaseline = 'alphabetic';
+
+  ctx.font = `600 36px 'Inter', sans-serif`;
+  ctx.fillStyle = t.accent;
+  ctx.fillText(unitLabel().toUpperCase(), W/2, 900);
+
+  // 4 stat cards in 2×2 grid
+  const cardW = 460, cardH = 158, cardGap = 16;
+  const gridX = [72, 72 + cardW + cardGap];
+  const gridY = [1010, 1010 + cardH + cardGap];
+
+  const storyStats = [
+    { label: 'DISTANZ', value: getDist(state.distance) + ' ' + distLabel(), isRank: false },
+    { label: 'ZEIT', value: state.time, isRank: false },
+    { label: 'RANG', value: state.rank, isRank: true },
+    { label: 'TOP CORNER', value: getSpeed(state.cornerSpeed) + ' ' + unitLabel(), isRank: false },
+  ];
+
+  storyStats.forEach((s, i) => {
+    const col = i % 2, row = Math.floor(i / 2);
+    const x = gridX[col], y = gridY[row];
+    roundRect(ctx, x, y, cardW, cardH, 20);
+    ctx.fillStyle = 'rgba(255,255,255,0.025)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.fillStyle = t.accent;
+    roundRect(ctx, x + 24, y + 20, 30, 3, 1.5);
+    ctx.fill();
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+    ctx.font = `400 18px 'Inter', sans-serif`;
+    ctx.fillStyle = MUTED;
+    ctx.fillText(s.label, x + 24, y + 62);
+    if (s.isRank) {
+      ctx.font = `700 42px 'Space Grotesk', sans-serif`;
+      ctx.fillStyle = rankColor(state.rank);
+      ctx.fillText('★ ' + state.rank, x + 24, y + 112);
+      ctx.font = `400 16px 'Inter', sans-serif`;
+      ctx.fillStyle = TEXT_DIM;
+      ctx.fillText('Fastest in ' + state.region + ' today', x + 24, y + 138);
+    } else {
+      ctx.font = `700 44px 'Space Grotesk', sans-serif`;
+      ctx.fillStyle = TEXT;
+      ctx.fillText(s.value, x + 24, y + 120);
+    }
+  });
+
+  // CTA
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  ctx.font = `700 38px 'Syne', sans-serif`;
+  ctx.fillStyle = TEXT;
+  ctx.fillText('Track your speed.', W/2, 1540);
+
+  // Footer
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(72, H - 130); ctx.lineTo(W - 72, H - 130); ctx.stroke();
+  ctx.font = `500 22px 'Inter', sans-serif`;
+  ctx.fillStyle = MUTED;
+  ctx.textAlign = 'left';
+  ctx.fillText('Tracked with PACE', 72, H - 76);
+  ctx.textAlign = 'right';
+  ctx.fillStyle = t.accent;
+  ctx.font = `600 22px 'Inter', sans-serif`;
+  ctx.fillText('pace-mobile.com', W - 72, H - 76);
+}
+
+// ---- Animation ----
+let animFrame = null;
+let animTimeoutId = null;
+
+function stopAnimation() {
+  if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
+  if (animTimeoutId) { clearTimeout(animTimeoutId); animTimeoutId = null; }
+}
+
+function startAnimation() {
+  stopAnimation();
+  const duration = 3800;
+  let startTime = null;
+
+  function tick(ts) {
+    if (!startTime) startTime = ts;
+    const elapsed = ts - startTime;
+    const t = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - t, 2.5);
+    renderAnimatedFrame(eased);
+    if (t < 1) {
+      animFrame = requestAnimationFrame(tick);
+    } else {
+      animTimeoutId = setTimeout(() => {
+        startTime = null;
+        animFrame = requestAnimationFrame(tick);
+      }, 2000);
+    }
+  }
+  animFrame = requestAnimationFrame(tick);
+}
+
+function renderAnimatedFrame(progress) {
+  const W = canvas.width, H = canvas.height;
+  drawBackground();
+  drawLogo(72, 62);
+  drawUsername(72, 224);
+  drawTripBadge(W - 260, 72);
+
+  const spd = getSpeed(state.topSpeed);
+  const maxRef = state.unit === 'kmh' ? 300 : 186;
+  const arcCY = 490;
+  const animSpd = Math.round(spd * progress);
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  ctx.font = `600 22px 'Inter', sans-serif`;
+  ctx.fillStyle = MUTED;
+  ctx.fillText('TOP SPEED', W/2, 252);
+
+  drawSpeedArc(W/2, arcCY, 218, animSpd, maxRef);
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = `700 140px 'Space Grotesk', sans-serif`;
+  ctx.fillStyle = TEXT;
+  ctx.fillText(animSpd, W/2, arcCY - 12);
+  ctx.textBaseline = 'alphabetic';
+
+  ctx.font = `600 26px 'Inter', sans-serif`;
+  ctx.fillStyle = T().accent;
+  ctx.fillText(unitLabel().toUpperCase(), W/2, arcCY + 92);
+
+  const fadeIn = Math.max(0, Math.min(1, (progress - 0.70) / 0.30));
+  ctx.globalAlpha = fadeIn;
+
+  const statY = 780;
+  const stats = [
+    { label: 'Distanz', value: getDist(state.distance) + ' ' + distLabel() },
+    { label: 'Ø Speed', value: getSpeed(state.avgSpeed) + ' ' + unitLabel() },
+    { label: 'Zeit', value: state.time },
+  ];
+  const gap = 14;
+  const slotW = (W - 144 - gap * 2) / 3;
+  stats.forEach((s, i) => {
+    const x = 72 + (slotW + gap) * i;
+    roundRect(ctx, x, statY - 60, slotW, 134, 16);
+    ctx.fillStyle = 'rgba(255,255,255,0.025)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.fillStyle = T().accent;
+    roundRect(ctx, x + 20, statY - 60, 28, 3, 1.5);
+    ctx.fill();
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+    ctx.font = `400 16px 'Inter', sans-serif`;
+    ctx.fillStyle = MUTED;
+    ctx.fillText(s.label.toUpperCase(), x + 20, statY - 18);
+    ctx.font = `700 34px 'Space Grotesk', sans-serif`;
+    ctx.fillStyle = TEXT;
+    ctx.fillText(s.value, x + 20, statY + 36);
+  });
+
+  drawRankBadge(W/2, 880, state.rank, state.region, true);
+  ctx.globalAlpha = 1.0;
+  drawFooter(W, H);
+}
+
+function render() {
+  if (state.template !== 'story') {
+    canvas.width = 1080;
+    canvas.height = 1080;
+  }
+  if (state.template !== 'animated') stopAnimation();
+  const dlBtn = document.querySelector('.dl-btn');
+  if (dlBtn) {
+    if (state.template === 'animated') {
+      dlBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg> Video herunterladen`;
+    } else {
+      dlBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> PNG herunterladen`;
+    }
+  }
+  switch(state.template) {
+    case 'basic':        renderBasic(); break;
+    case 'topspeed':     renderTopSpeed(); break;
+    case 'acceleration': renderAcceleration(); break;
+    case 'leaderboard':  renderLeaderboard(); break;
+    case 'story':        renderStory(); break;
+    case 'animated':     startAnimation(); break;
+  }
+  const pill = document.getElementById('format-pill');
+  if (pill) pill.textContent = `${canvas.width} × ${canvas.height}`;
+}
+
+function download() {
+  if (state.template === 'animated') { downloadAnimated(); return; }
+  const link = document.createElement('a');
+  link.download = `pace-${state.template}-${state.username}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+function downloadAnimated() {
+  if (!window.MediaRecorder) {
+    alert('Video-Download wird von diesem Browser nicht unterstützt. Bitte Chrome verwenden.');
+    return;
+  }
+  const stream = canvas.captureStream(30);
+  let recorder;
+  try { recorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9' }); }
+  catch (e) { recorder = new MediaRecorder(stream); }
+
+  const chunks = [];
+  recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: 'video/webm' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.download = `pace-animated-${state.username}.webm`;
+    a.href = url;
+    a.click();
+    URL.revokeObjectURL(url);
+    startAnimation();
+  };
+
+  stopAnimation();
+  recorder.start();
+  const recordDuration = 4600;
+  let recStart = null;
+
+  function recTick(ts) {
+    if (!recStart) recStart = ts;
+    const elapsed = ts - recStart;
+    const t = Math.min(elapsed / 2200, 1);
+    renderAnimatedFrame(1 - Math.pow(1 - t, 2.5));
+    if (elapsed < recordDuration) requestAnimationFrame(recTick);
+    else recorder.stop();
+  }
+  requestAnimationFrame(recTick);
+}
+
+async function copyToClipboard() {
+  try {
+    canvas.toBlob(async (blob) => {
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+      flashToolbar('In Zwischenablage kopiert ✓');
+    });
+  } catch (e) {
+    flashToolbar('Browser unterstützt Copy nicht');
+  }
+}
+
+function flashToolbar(msg) {
+  const info = document.querySelector('.toolbar-info');
+  const original = info.innerHTML;
+  info.innerHTML = `<span style="color:var(--accent-hot);font-weight:500">${msg}</span>`;
+  setTimeout(() => { info.innerHTML = original; render(); }, 1600);
+}
+
+buildInputs();
+buildColorPicker();
+document.fonts.ready.then(() => render());
+</script>
+</body>
+</html>
