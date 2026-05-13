@@ -1482,7 +1482,7 @@ async function _osrmRoute(a, b) {
   const r = await fetch(`https://router.project-osrm.org/route/v1/driving/${a.lon},${a.lat};${b.lon},${b.lat}?overview=full&geometries=geojson`);
   const d = await r.json();
   if (d.code !== 'Ok') throw new Error('Route nicht gefunden');
-  return d.routes[0].geometry.coordinates;
+  return { coords: d.routes[0].geometry.coordinates, duration: d.routes[0].duration };
 }
 function _loadTile(x, y, z) {
   return new Promise(resolve => {
@@ -1523,8 +1523,15 @@ async function renderRoute() {
     ]);
     if (seq !== _routeSeq) return;
 
-    const coords = await _osrmRoute(fromCoord, toCoord);
+    const { coords, duration } = await _osrmRoute(fromCoord, toCoord);
     if (seq !== _routeSeq) return;
+
+    // Auto-fill expected time from OSRM duration
+    const _h = Math.floor(duration / 3600), _m = Math.floor((duration % 3600) / 60);
+    const autoTime = `${String(_h).padStart(2,'0')}:${String(_m).padStart(2,'0')}`;
+    state.timeExpected = autoTime;
+    const _inp = document.querySelector('[oninput*="timeExpected"]');
+    if (_inp) _inp.value = autoTime;
 
     const lats = coords.map(c => c[1]), lons = coords.map(c => c[0]);
     const minLat = Math.min(...lats), maxLat = Math.max(...lats);
