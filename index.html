@@ -619,8 +619,8 @@ let state = {
   speedMed: 14,
   speedFast: 21,
   speedMax: 36,
-  timeExpected: '04:52',
-  timeActual: '02:32',
+  timeExpected: '04:52:00',
+  timeActual: '02:32:00',
   rank1name: 'SpeedKing',
   rank1speed: 210,
   rank2name: 'FastDriver',
@@ -693,8 +693,8 @@ const templates = {
     { key: 'speedMed', label: '40–90 km/h', hint: '%', type: 'number' },
     { key: 'speedFast', label: '90–130 km/h', hint: '%', type: 'number' },
     { key: 'speedMax', label: '> 130 km/h', hint: '%', type: 'number' },
-    { key: 'timeExpected', label: 'Erwartete Zeit', hint: 'hh:mm', type: 'text' },
-    { key: 'timeActual', label: 'Tatsächliche Zeit', hint: 'hh:mm', type: 'text' },
+    { key: 'timeExpected', label: 'Erwartete Zeit', hint: 'hh:mm:ss', type: 'text' },
+    { key: 'timeActual', label: 'Tatsächliche Zeit', hint: 'hh:mm:ss', type: 'text' },
   ],
 };
 
@@ -1527,8 +1527,8 @@ async function renderRoute() {
     if (seq !== _routeSeq) return;
 
     // Auto-fill expected time from OSRM duration
-    const _h = Math.floor(duration / 3600), _m = Math.floor((duration % 3600) / 60);
-    const autoTime = `${String(_h).padStart(2,'0')}:${String(_m).padStart(2,'0')}`;
+    const _h = Math.floor(duration / 3600), _m = Math.floor((duration % 3600) / 60), _s = Math.floor(duration % 60);
+    const autoTime = `${String(_h).padStart(2,'0')}:${String(_m).padStart(2,'0')}:${String(_s).padStart(2,'0')}`;
     state.timeExpected = autoTime;
     const _inp = document.querySelector('[oninput*="timeExpected"]');
     if (_inp) _inp.value = autoTime;
@@ -1717,22 +1717,23 @@ function _drawRouteCards(W, H, mapH, padX) {
   ctx.fillStyle = TEXT; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
   ctx.fillText('Travel Time Comparison', padX + 36, ttY + 56);
 
-  const toMin = s => { const p = (s||'00:00').split(':'); return parseInt(p[0])*60 + parseInt(p[1]||0); };
-  const diff    = toMin(state.timeExpected) - toMin(state.timeActual);
+  const toSec = s => { const p = (s||'00:00:00').split(':'); return parseInt(p[0])*3600 + parseInt(p[1]||0)*60 + parseInt(p[2]||0); };
+  const diff    = toSec(state.timeExpected) - toSec(state.timeActual);
   const faster  = diff > 0;
-  const dH = Math.floor(Math.abs(diff)/60), dM = Math.abs(diff)%60;
-  const diffStr = dH > 0 ? `${dH}h ${dM}min` : `${dM}min`;
+  const absDiff = Math.abs(diff);
+  const dH = Math.floor(absDiff/3600), dM = Math.floor((absDiff%3600)/60), dS = absDiff%60;
+  const diffStr = dH > 0 ? `${dH}h ${dM}min ${dS}s` : dM > 0 ? `${dM}min ${dS}s` : `${dS}s`;
   const timeY   = ttY + 180;
 
   ctx.font = `700 86px 'Space Grotesk', sans-serif`;
   ctx.fillStyle = TEXT; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
-  ctx.fillText(state.timeExpected||'04:52', padX + 48, timeY);
+  ctx.fillText(state.timeExpected||'04:52:00', padX + 48, timeY);
   ctx.font = `400 24px 'Inter', sans-serif`; ctx.fillStyle = TEXT_DIM;
   ctx.fillText('Expected', padX + 48, timeY + 38);
 
   ctx.font = `700 86px 'Space Grotesk', sans-serif`;
   ctx.fillStyle = TEXT; ctx.textAlign = 'right';
-  ctx.fillText(state.timeActual||'02:32', padX + ttW - 48, timeY);
+  ctx.fillText(state.timeActual||'02:32:00', padX + ttW - 48, timeY);
   ctx.font = `400 24px 'Inter', sans-serif`; ctx.fillStyle = TEXT_DIM; ctx.textAlign = 'right';
   ctx.fillText('Actual', padX + ttW - 48, timeY + 38);
 
